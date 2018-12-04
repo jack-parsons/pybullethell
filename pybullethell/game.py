@@ -10,15 +10,16 @@ class Game:
         self.size_x = int(size_x)
         self.size_y = int(size_y)
         self.field = pygame.Rect(0, 0, size_x, size_y)
-        self.player = Player(self.size_x // 2, self.size_y // 2,
-                             self.size_x, self.size_y)
         self.bullets = []
+        self.player = Player(self.size_x // 2, self.size_y // 2,
+                             self.size_x, self.size_y, self.bullets)
+        
         self.font = pygame.font.Font(None, 30)
         self.score = 0
         self.ticks_per_bullet = ticks_per_bullet
 
     def tick(self):
-        self.player.tick()
+        self.player.tick(self.bullets)
         for bullet in self.bullets:
             bullet.tick()
 
