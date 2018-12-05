@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 from AkhiAI import *
+from pybullethell.JackAI import JackAI
 
 
 class GameObject(ABC):
@@ -14,7 +15,7 @@ class GameObject(ABC):
         pass
 
     @abstractmethod
-    def tick(self):
+    def tick(self, list_of_bullets):
         pass
 
 
@@ -28,7 +29,7 @@ class Player(GameObject):
         self.game_size_x = game_size_x
         self.game_size_y = game_size_y
         self.alive = True
-        self.ai = AkhiAI()
+        self.ai = JackAI(game_size_x, game_size_y, Player.SIZE, Player.SPEED)
 
     def hitbox(self):
         return pygame.Rect(self.x, self.y, Player.SIZE, Player.SIZE)

@@ -1,4 +1,6 @@
-class AI:
+from abc import ABC, abstractmethod
+
+class AI(ABC):
     def __init__(self, width, height, player_size, player_speed):
         self.width = width
         self.height = height
@@ -7,5 +9,6 @@ class AI:
 
     # list_bullets is a list of positions of bullets
     # pos is a tuple (x, y) for the player
+    @abstractmethod
     def get_velocity(self, list_bullets, pos):
        return 0, 0  # return tuple for coordinates

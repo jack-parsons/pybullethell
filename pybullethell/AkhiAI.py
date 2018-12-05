@@ -2,12 +2,10 @@ import random
 import pygame
 from AI import AI
 
+
 class AkhiAI(AI):
     BOX_HEIGHT = 200
     BOX_WIDTH = 200
-    
-    def __init__(self):
-        pass
 
     def get_velocity(self, list_bullets, pos):
         if not list_bullets:
