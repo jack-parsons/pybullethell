@@ -15,6 +15,8 @@ if __name__ == '__main__':
 
     game = Game(SIZE_X, SIZE_Y, TICKS_PER_BULLET)
     game_exit = False
+    total_score = 0
+    num_games = 0
     while not game_exit:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -23,8 +25,11 @@ if __name__ == '__main__':
         foreground.fill(pygame.Color('black'))
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_SPACE] or not game.player.alive:
+            total_score += game.score
+            num_games += 1
             game = Game(SIZE_X, SIZE_Y, TICKS_PER_BULLET)
+            print(total_score/num_games)
 
         game.tick()
         game.draw(foreground)
