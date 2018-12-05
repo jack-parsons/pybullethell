@@ -6,7 +6,7 @@ class AkhiAI(AI):
     BOX_HEIGHT = 200
     BOX_WIDTH = 200
     
-    def __init__(self, list_bullets):
+    def __init__(self):
         pass
 
     def get_velocity(self, list_bullets, pos):

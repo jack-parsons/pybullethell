@@ -28,7 +28,7 @@ class Player(GameObject):
         self.game_size_x = game_size_x
         self.game_size_y = game_size_y
         self.alive = True
-        self.ai = AkhiAI(tuple(bullet_list))
+        self.ai = AkhiAI()
 
     def hitbox(self):
         return pygame.Rect(self.x, self.y, Player.SIZE, Player.SIZE)
