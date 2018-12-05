@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 from AkhiAI import *
+from SohaibAI import *
 from pybullethell.JackAI import JackAI
 
 
@@ -29,7 +30,7 @@ class Player(GameObject):
         self.game_size_x = game_size_x
         self.game_size_y = game_size_y
         self.alive = True
-        self.ai = JackAI(game_size_x, game_size_y, Player.SIZE, Player.SPEED)
+        self.ai = SohaibAI(game_size_x, game_size_y, Player.SIZE, Player.SPEED)
 
     def hitbox(self):
         return pygame.Rect(self.x, self.y, Player.SIZE, Player.SIZE)

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
 class AI(ABC):
+    SURFACE = None
+
     def __init__(self, width, height, player_size, player_speed):
         self.width = width
         self.height = height
