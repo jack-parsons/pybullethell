@@ -1,7 +1,26 @@
 from pybullethell.AI import AI
 import random
+from math import *
 
 
 class JackAI(AI):
     def get_velocity(self, list_of_bullets, pos):
-        return random.randrange(-1, 2), random.randrange(-1, 2)
+        if len(list_of_bullets) > 0:
+            min_dist_bullet = list_of_bullets[0]
+            min_dist = hypot(min_dist_bullet.x-pos[0], min_dist_bullet.y-pos[1])
+            for bullet in list_of_bullets:
+                dist = hypot(bullet.x-pos[0], bullet.y-pos[1])
+                if min_dist > dist:
+                    min_dist = dist
+            if pos[0] < min_dist:
+                return 1, 0
+            elif self.width - pos[0] < min_dist:
+                return -1, 0
+            elif pos[1] < min_dist:
+                return 0, 1
+            elif self.height - pos[1] < min_dist:
+                return 0, -1
+            else:
+                return -min_dist_bullet.x+pos[0], -min_dist_bullet.y+pos[1]
+
+        return 0, 0
