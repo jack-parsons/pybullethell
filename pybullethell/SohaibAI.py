@@ -5,7 +5,7 @@ from AI import AI
 
 
 class Line(object):
-    THRESHOLD = 75
+    THRESHOLD = 52
     
     def __init__(self, x1, y1, x2, y2):
         self.x1 = x1
@@ -28,8 +28,8 @@ class Line(object):
 
 
 class SohaibAI(AI):
-    BOX_WIDTH = 150
-    BOX_HEIGHT = 175
+    BOX_WIDTH = 200
+    BOX_HEIGHT = 250
 
     def __init__(self, width, height, player_size, player_speed):
         self.width = width
@@ -40,36 +40,31 @@ class SohaibAI(AI):
         self.list_of_lines = []
         self.fully_caught_bullets = set()
 
-    def check_if_out_of_bounds(self, width_ratio, height_ratio, pos):
-        if pos[0] < self.width / width_ratio:
-            return 1, 0
-        if pos[0] > self.width * (width_ratio - 1 / width_ratio):
-            return -1, 0
-        if pos[1] < self.height / height_ratio:
-            return 0, 1
-        if pos[1] > self.height* (height_ratio - 1 / height_ratio):
-            return 0, -1
-
-
     def get_velocity(self, list_bullets, pos):
-        self.check_if_out_of_bounds(4, 6, pos)
 
+        """
         if self.list_of_lines and list_bullets:
             for _ in range(len(self.list_of_lines) - len(list_bullets)):
-                del self.list_of_lines[0]
+        """
+
 
         box_left = pos[0] - SohaibAI.BOX_WIDTH
         box_right = pos[0] + SohaibAI.BOX_WIDTH + self.player_size
         box_up = pos[1] + SohaibAI.BOX_HEIGHT
         box_down = pos[1] - SohaibAI.BOX_HEIGHT + self.player_size
 
-        for line in self.list_of_lines:
-            for x in range(self.width):
-                AI.SURFACE.set_at((x, round(line.get_y_for_x(x))), (0,255,152,0))
+        # for line in self.list_of_lines:
+            # for x in range(self.width):
+             #    AI.SURFACE.set_at((x, round(line.get_y_for_x(x))), (0,255,152,0))
 
         for bullet in self.caught_bullets.keys():
-            if box_left + bullet.SIZE + 1 < bullet.x < box_right - bullet.SIZE - 1 and box_down + bullet.SIZE + 1 < bullet.y < box_up - bullet.SIZE - 1 and bullet not in self.fully_caught_bullets:
-                self.list_of_lines.append(Line(self.caught_bullets[bullet][0], self.caught_bullets[bullet][1], bullet.x, bullet.y))
+            if box_left + bullet.SIZE + 1 < bullet.x < box_right - bullet.SIZE - 1\
+                    and box_down + bullet.SIZE + 1 < bullet.y < box_up - bullet.SIZE - 1\
+                    and bullet not in self.fully_caught_bullets:
+                self.list_of_lines.append(Line(self.caught_bullets[bullet][0] + bullet.SIZE / 2,
+                                               self.caught_bullets[bullet][1] + bullet.SIZE / 2,
+                                               bullet.x + bullet.SIZE / 2,
+                                               bullet.y + bullet.SIZE / 2))
                 self.fully_caught_bullets.add(bullet)
 
         for bullet in list_bullets:
@@ -78,16 +73,22 @@ class SohaibAI(AI):
 
         minimum_bullet = None
         minimum_distance = inf
+        player_center_x = pos[0] + (self.player_size / 2)
+        player_center_y = pos[1] + (self.player_size / 2)
         for line in self.list_of_lines:
             if line.is_on_line(pos[0], pos[1]):
                 for bullet in self.fully_caught_bullets:
-                    distance = sqrt((bullet.x - pos[0]) ** 2 + (bullet.y - pos[1]) ** 2)
+                    distance = sqrt((bullet.x - player_center_x) ** 2 + (bullet.y - player_center_y) ** 2)
                     if distance < minimum_distance:
                         minimum_distance = distance
                         minimum_bullet = bullet
 
         if minimum_bullet:
-            pygame.draw.line(AI.SURFACE, pygame.Color('red'), (pos[0], pos[1]), (minimum_bullet.x, minimum_bullet.y), 2)
-            return (minimum_bullet.x - pos[0]) * -1, (minimum_bullet.y - pos[1]) * -1
+            bullet_center_x = minimum_bullet.x + bullet.SIZE / 2
+            bullet_center_y = minimum_bullet.y + bullet.SIZE / 2
+            pygame.draw.line(AI.SURFACE, pygame.Color('red'),
+                             (player_center_x, player_center_y),
+                             (bullet_center_x, bullet_center_y), 2)
+            return (bullet_center_x - player_center_x) * -1, (bullet_center_y - player_center_y) * -1
         else:
             return 0, 0

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import pygame
 from AkhiAI import *
 from SohaibAI import *
+from Human import *
 from pybullethell.JackAI import JackAI
 
 
@@ -90,17 +91,5 @@ class Bullet(GameObject):
 
 
 """
-keys = pygame.key.get_pressed()
-if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-    self.x = max(0, min(self.x - Player.SPEED,
-                        self.game_size_x - Player.SIZE))
-if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-    self.x = max(0, min(self.x + Player.SPEED,
-                        self.game_size_x - Player.SIZE))
-if keys[pygame.K_UP] or keys[pygame.K_w]:
-    self.y = max(0, min(self.y - Player.SPEED,
-                        self.game_size_y - Player.SIZE))
-if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-    self.y = max(0, min(self.y + Player.SPEED,
-                        self.game_size_y - Player.SIZE))
+
 """    
