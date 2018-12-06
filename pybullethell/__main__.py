@@ -1,6 +1,6 @@
 import pygame
-from game import Game
-from AI import AI
+from pybullethell.game import Game
+from pybullethell.AI import AI
 
 SIZE_X = 1000
 SIZE_Y = 600

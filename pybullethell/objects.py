@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 import pygame
-from AkhiAI import *
-from SohaibAI import *
-from Human import *
+from pybullethell.AkhiAI import *
+from pybullethell.SohaibAI import *
+from pybullethell.Human import *
+from pybullethell.PredictAI import *
 from pybullethell.JackAI import JackAI
 
 
