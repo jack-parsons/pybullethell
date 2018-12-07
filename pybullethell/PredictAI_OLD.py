@@ -4,7 +4,7 @@ from random import choice
 from pybullethell.AI import AI
 
 
-class PredictAI(AI):
+class PredictAI_OLD(AI):
     BOX_HEIGHT = 500
     BOX_WIDTH = 600
     POSITIONS = [(0, 0), (0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
@@ -22,7 +22,7 @@ class PredictAI(AI):
         else:
             y = -1
         randpos = x, y
-        timeout = time.time() + 5
+        timeout = time.time() + 2
         while time.time() < timeout:
             will_collide = True
             for bullet in list_bullets:
@@ -48,6 +48,6 @@ class PredictAI(AI):
             if not will_collide:
                 break
             else:
-                randpos = choice(PredictAI.POSITIONS)
+                randpos = choice(PredictAI_OLD.POSITIONS)
 
         return randpos

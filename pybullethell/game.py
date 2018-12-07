@@ -3,9 +3,9 @@ import random
 from itertools import permutations
 from objects import Player, Bullet
 from pybullethell.AkhiAI import *
-from pybullethell.SohaibAI import *
 from pybullethell.Human import *
 from pybullethell.PredictAI import *
+from pybullethell.PredictAI_OLD import *
 from pybullethell.JackAI import JackAI
 
 
@@ -16,9 +16,11 @@ class Game:
         self.field = pygame.Rect(0, 0, size_x, size_y)
         self.bullets = []
         self.players = [
-            Player(self.size_x*(0.25+random.random()*0.5), self.size_y*(0.25+random.random()*0.5), self.size_x, self.size_y, self.bullets, SohaibAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED), color=(255, 0, 0)),
+            Player(self.size_x * (0.25 + random.random() * 0.5), self.size_y * (0.25 + random.random() * 0.5), self.size_x, self.size_y, self.bullets, AkhiAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED), color=(255, 0, 0)),
             Player(self.size_x * (0.25 + random.random() * 0.5), self.size_y * (0.25 + random.random() * 0.5), self.size_x, self.size_y, self.bullets, JackAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED), color=(0, 255, 0)),
-            Player(self.size_x*(0.25+random.random()*0.5), self.size_y*(0.25+random.random()*0.5), self.size_x, self.size_y, self.bullets, PredictAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED), color=(0, 0, 255))
+            Player(self.size_x * (0.25 + random.random() * 0.5), self.size_y * (0.25 + random.random() * 0.5), self.size_x, self.size_y, self.bullets, PredictAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED), color=(0, 0, 255)),
+            Player(self.size_x * (0.25 + random.random() * 0.5), self.size_y * (0.25 + random.random() * 0.5), self.size_x, self.size_y, self.bullets, Human(self.size_x, self.size_y, Player.SIZE, Player.SPEED), color=(0, 111, 95)),
+            Player(self.size_x * (0.25 + random.random() * 0.5), self.size_y * (0.25 + random.random() * 0.5),self.size_x, self.size_y, self.bullets, PredictAI_OLD(self.size_x, self.size_y, Player.SIZE, Player.SPEED),color=(111, 34, 95))
         ]
         
         self.font = pygame.font.Font(None, 30)

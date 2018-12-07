@@ -4,7 +4,7 @@ from math import inf, sqrt, isnan
 import random
 from pybullethell.AI import AI
 
-SHOW_VISUALS = True
+SHOW_VISUALS = False
 
 
 class Line(object):
@@ -37,7 +37,7 @@ class AkhiAI(AI):
     BOX_HEIGHT = 250
     SLOW_FACTOR = 1
     LOOKAHEAD_FACTOR = 10
-    TIMEOUT = 3
+    TIMEOUT = 2
 
     def __init__(self, width, height, player_size, player_speed):
         self.width = width
