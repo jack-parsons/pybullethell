@@ -55,11 +55,9 @@ class Player(GameObject):
 
         if not position[0] == 0:
             self.x += (int(position[0] / abs(position[0]))) * Player.SPEED
-            
 
         if not position[1] == 0:
-            self.y += (int(position[1] / abs(position[1]))) * Player.SPEED                            
-        
+            self.y += (int(position[1] / abs(position[1]))) * Player.SPEED
 
     def draw(self, surface):
         if self.alive:

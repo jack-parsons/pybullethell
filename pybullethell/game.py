@@ -3,7 +3,6 @@ import random
 from itertools import permutations
 from objects import Player, Bullet
 
-
 class Game:
 
     def __init__(self, size_x, size_y, ticks_per_bullet=10):

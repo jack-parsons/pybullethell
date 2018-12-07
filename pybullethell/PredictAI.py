@@ -1,4 +1,5 @@
 import pygame
+import time
 from random import choice
 from pybullethell.AI import AI
 
@@ -12,6 +13,7 @@ class PredictAI(AI):
         if not list_bullets:
             return 0, 0
 
+        timeout = 0
         while True:
             will_collide = True
             randpos = choice(PredictAI.POSITIONS)
@@ -26,23 +28,19 @@ class PredictAI(AI):
                 top_left_player = next_player_x - self.player_size / 2, next_player_y - self.player_size / 2
                 bottom_right_player = next_player_x + self.player_size / 2, next_player_y + self.player_size / 2
 
-                pygame.draw.polygon(AI.SURFACE, pygame.Color("green"), [top_left_bullet, (top_left_bullet[0] + bullet.SIZE, top_left_bullet[1]), bottom_right_bullet, (bottom_right_bullet[0] - bullet.SIZE, bottom_right_bullet[1])], 2)
-                pygame.draw.polygon(AI.SURFACE, pygame.Color("red"),
-                                    [top_left_player, (top_left_player[0] + self.player_size, top_left_player[1]),
-                                     bottom_right_player,
-                                     (bottom_right_player[0] - self.player_size, bottom_right_player[1])], 2)
-                if top_left_bullet[0] > bottom_right_player[0] or top_left_player[0] > bottom_right_bullet[0]:
-                    will_collide = False
-                    continue
-                if top_left_bullet[1] < bottom_right_player[1] or top_left_player[1] < bottom_right_bullet[1]:
-                    will_collide = False
-                    continue
+                if top_left_bullet[0] < bottom_right_player[0]\
+                   and bottom_right_bullet[0] > top_left_player[0]\
+                   and top_left_bullet[1] < bottom_right_player[1]\
+                   and bottom_right_bullet[1] > top_left_player[1]:
+                    will_collide = True
+                    break
 
-                print("TEST")
-                will_collide = True
-                break
+                will_collide = False
+                timeout = 0
 
             if not will_collide:
                 break
+            else:
+                timeout += 1
 
         return randpos

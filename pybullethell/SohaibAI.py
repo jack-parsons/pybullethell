@@ -1,12 +1,14 @@
 import pygame
-from math import inf, sqrt
+from math import inf, sqrt, isnan
 import random
 from pybullethell.AI import AI
+
+SHOW_VISUALS = False
 
 
 class Line(object):
     THRESHOLD = 60
-    
+
     def __init__(self, x1, y1, x2, y2):
         self.x1 = x1
         self.y1 = y1
@@ -14,13 +16,15 @@ class Line(object):
         self.y2 = y2
 
         if x1 == x2:
-            self.gradient = 0
+            self.gradient = inf
         else:
             self.gradient = (y1 - y2) / (x1 - x2)
         self.y_intercept = y1 - (self.gradient * x1)
 
     def is_on_line(self, x, y):
         calc_value = (x * self.gradient) + self.y_intercept - y
+        if isnan(calc_value):
+            calc_value = self.x2 - x
         return Line.THRESHOLD * -1 <= calc_value <= Line.THRESHOLD
 
     def get_y_for_x(self, x):
@@ -63,18 +67,28 @@ class SohaibAI(AI):
         box_up = pos[1] + SohaibAI.BOX_HEIGHT
         box_down = pos[1] - SohaibAI.BOX_HEIGHT + self.player_size
 
-        for line in self.list_of_lines.keys():
-            for x in range(self.width):
-                AI.SURFACE.set_at((x, round(line.get_y_for_x(x))), (0,0,252,0))
+        if SHOW_VISUALS:
+            pygame.draw.polygon(AI.SURFACE, pygame.Color('orange'), [(box_left, box_up),
+                                                                 (box_right, box_up),
+                                                                 (box_right, box_down),
+                                                                 (box_left, box_down)], 2)
+
+            for line in self.list_of_lines.keys():
+                for x in range(self.width):
+                    y = line.get_y_for_x(x)
+                    if isnan(y):
+                        AI.SURFACE.set_at((round(line.x2), x), (0, 0, 252, 0))
+                    else:
+                        AI.SURFACE.set_at((x, round(y)), (0, 0, 252, 0))
 
         for bullet in self.caught_bullets.keys():
-            if box_left + bullet.SIZE + 1 < bullet.x < box_right - bullet.SIZE - 1\
-                    and box_down + bullet.SIZE + 1 < bullet.y < box_up - bullet.SIZE - 1\
+            if box_left + bullet.SIZE + 1 < bullet.x < box_right - bullet.SIZE - 1 \
+                    and box_down + bullet.SIZE + 1 < bullet.y < box_up - bullet.SIZE - 1 \
                     and bullet not in self.fully_caught_bullets:
                 self.list_of_lines[(Line(self.caught_bullets[bullet][0] + bullet.SIZE / 2,
-                                               self.caught_bullets[bullet][1] + bullet.SIZE / 2,
-                                               bullet.x + bullet.SIZE / 2,
-                                               bullet.y + bullet.SIZE / 2))] = bullet
+                                         self.caught_bullets[bullet][1] + bullet.SIZE / 2,
+                                         bullet.x + bullet.SIZE / 2,
+                                         bullet.y + bullet.SIZE / 2))] = bullet
                 self.fully_caught_bullets.add(bullet)
 
         for bullet in list_bullets:
@@ -97,9 +111,42 @@ class SohaibAI(AI):
         if minimum_bullet and (self.slow_counter == 1 or SohaibAI.SLOW_FACTOR == 1):
             bullet_center_x = (minimum_bullet.x_speed * SohaibAI.LOOKAHEAD_FACTOR) + minimum_bullet.x + bullet.SIZE / 2
             bullet_center_y = (minimum_bullet.y_speed * SohaibAI.LOOKAHEAD_FACTOR) + minimum_bullet.y + bullet.SIZE / 2
-            pygame.draw.line(AI.SURFACE, pygame.Color('red'),
-                             (player_center_x, player_center_y),
-                             (bullet_center_x, bullet_center_y), 2)
-            return (bullet_center_x - player_center_x) * -1, (bullet_center_y - player_center_y) * -1
+            if SHOW_VISUALS:
+                pygame.draw.line(AI.SURFACE, pygame.Color('red'),
+                                 (player_center_x, player_center_y),
+                                 (bullet_center_x, bullet_center_y), 2)
+            return_x, return_y = (bullet_center_x - player_center_x) * -1, (bullet_center_y - player_center_y) * -1
         else:
+            return_x, return_y = 0, 0
+
+        if not list_bullets:
             return 0, 0
+
+        while True:
+            will_collide = True
+            for bullet in list_bullets:
+                next_bullet_x = bullet.x + bullet.x_speed + bullet.SIZE / 2
+                next_bullet_y = bullet.y + bullet.y_speed + bullet.SIZE / 2
+                next_player_x = pos[0] + (self.player_size / 2) + (return_x * self.player_speed)
+                next_player_y = pos[1] + (self.player_size / 2) + (return_y * self.player_speed)
+
+                top_left_bullet = next_bullet_x - bullet.SIZE / 2, next_bullet_y - bullet.SIZE / 2
+                bottom_right_bullet = next_bullet_x + bullet.SIZE / 2, next_bullet_y + bullet.SIZE / 2
+                top_left_player = next_player_x - self.player_size / 2, next_player_y - self.player_size / 2
+                bottom_right_player = next_player_x + self.player_size / 2, next_player_y + self.player_size / 2
+
+                if top_left_bullet[0] < bottom_right_player[0]\
+                   and bottom_right_bullet[0] > top_left_player[0]\
+                   and top_left_bullet[1] < bottom_right_player[1]\
+                   and bottom_right_bullet[1] > top_left_player[1]:
+                    will_collide = True
+                    break
+
+                will_collide = False
+
+            if not will_collide:
+                break
+            else:
+                return_x, return_y = random.choice([(0, 0), (0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)])
+
+        return return_x, return_y
