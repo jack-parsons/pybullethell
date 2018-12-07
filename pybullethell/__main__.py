@@ -40,6 +40,6 @@ if __name__ == '__main__':
         screen.blit(foreground, (0, 0))
         pygame.display.flip()
 
-        clock.tick(6000)
+        clock.tick(60)
 
     pygame.quit()
