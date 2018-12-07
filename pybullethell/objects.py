@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 import pygame
-from AkhiAI import *
+from pybullethell.AkhiAI import *
+from pybullethell.SohaibAI import *
+from pybullethell.Human import *
+from pybullethell.PredictAI import *
 from pybullethell.JackAI import JackAI
 
 
@@ -29,7 +32,7 @@ class Player(GameObject):
         self.game_size_x = game_size_x
         self.game_size_y = game_size_y
         self.alive = True
-        self.ai = JackAI(game_size_x, game_size_y, Player.SIZE, Player.SPEED)
+        self.ai = SohaibAI(game_size_x, game_size_y, Player.SIZE, Player.SPEED)
 
     def hitbox(self):
         return pygame.Rect(self.x, self.y, Player.SIZE, Player.SIZE)
@@ -52,11 +55,9 @@ class Player(GameObject):
 
         if not position[0] == 0:
             self.x += (int(position[0] / abs(position[0]))) * Player.SPEED
-            
 
         if not position[1] == 0:
-            self.y += (int(position[1] / abs(position[1]))) * Player.SPEED                            
-        
+            self.y += (int(position[1] / abs(position[1]))) * Player.SPEED
 
     def draw(self, surface):
         if self.alive:
@@ -89,17 +90,5 @@ class Bullet(GameObject):
 
 
 """
-keys = pygame.key.get_pressed()
-if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-    self.x = max(0, min(self.x - Player.SPEED,
-                        self.game_size_x - Player.SIZE))
-if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-    self.x = max(0, min(self.x + Player.SPEED,
-                        self.game_size_x - Player.SIZE))
-if keys[pygame.K_UP] or keys[pygame.K_w]:
-    self.y = max(0, min(self.y - Player.SPEED,
-                        self.game_size_y - Player.SIZE))
-if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-    self.y = max(0, min(self.y + Player.SPEED,
-                        self.game_size_y - Player.SIZE))
+
 """    

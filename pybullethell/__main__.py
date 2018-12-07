@@ -1,5 +1,6 @@
 import pygame
-from game import Game
+from pybullethell.game import Game
+from pybullethell.AI import AI
 
 SIZE_X = 1000
 SIZE_Y = 600
@@ -23,6 +24,7 @@ if __name__ == '__main__':
                 game_exit = True
         foreground = pygame.Surface((SIZE_X, SIZE_Y), pygame.SRCALPHA)
         foreground.fill(pygame.Color('black'))
+        AI.SURFACE = foreground
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] or not game.player.alive:
