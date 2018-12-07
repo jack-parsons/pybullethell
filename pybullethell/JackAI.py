@@ -65,6 +65,14 @@ class JackAI(AI):
             perp_dist = -(pos.mag - Vector(bullet.x_speed, bullet.y_speed).mag) * tan(velocity.dir - bullet_vel.dir)
             if (pos - Vector(bullet.x, bullet.y)).mag < self.player_size * 3:
                 velocity += (pos - Vector(bullet.x, bullet.y)).normalise() * (1/(pos - Vector(bullet.x, bullet.y)).mag)**2
+        if pos.x < self.player_size * 3:
+            velocity += Vector(1, 0) * (1/pos.x)**2
+        if pos.y < self.player_size * 3:
+            velocity += Vector(0, 1) * (1/pos.y)**2
+        if pos.x > self.width - self.player_size * 3:
+            velocity += Vector(-1, 0) * (1/(pos.x - self.width))**2
+        if pos.y > self.height - self.player_size * 3:
+            velocity += Vector(0, -1) * (1/(pos.y - self.height))**2
         if velocity.mag != 0:
             return velocity.normalise()
         elif (center_pos - pos).mag > self.player_speed:
