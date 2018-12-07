@@ -10,10 +10,11 @@ class PredictAI(AI):
     POSITIONS = [(0, 0), (0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
 
     def get_velocity(self, list_bullets, pos):
-        if not list_bullets:
+        if len(list_bullets) == 0:
             return 0, 0
         timeout = 0
-        while timeout < 50 and len(list_bullets) > 0:
+        randpos = (0, 0)
+        while timeout < 50:
             will_collide = True
             randpos = choice(PredictAI.POSITIONS)
             for bullet in list_bullets:
@@ -35,9 +36,9 @@ class PredictAI(AI):
                     break
 
                 will_collide = False
-                timeout = 0
 
             if not will_collide:
                 break
             timeout += 1
+            print(timeout, will_collide)
         return randpos
