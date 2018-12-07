@@ -27,7 +27,7 @@ if __name__ == '__main__':
         AI.SURFACE = foreground
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] or not game.player.alive:
+        if keys[pygame.K_SPACE] or not game.a_player_alive:
             total_score += game.score
             num_games += 1
             game = Game(SIZE_X, SIZE_Y, TICKS_PER_BULLET)

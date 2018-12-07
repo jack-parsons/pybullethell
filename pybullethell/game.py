@@ -2,23 +2,33 @@ import pygame
 import random
 from itertools import permutations
 from objects import Player, Bullet
+from pybullethell.AkhiAI import *
+from pybullethell.SohaibAI import *
+from pybullethell.Human import *
+from pybullethell.PredictAI import *
+from pybullethell.JackAI import JackAI
+
 
 class Game:
-
     def __init__(self, size_x, size_y, ticks_per_bullet=10):
         self.size_x = int(size_x)
         self.size_y = int(size_y)
         self.field = pygame.Rect(0, 0, size_x, size_y)
         self.bullets = []
-        self.player = Player(self.size_x // 2, self.size_y // 2,
-                             self.size_x, self.size_y, self.bullets)
+        self.players = [
+            Player(self.size_x*(0.25+random.random()*0.5), self.size_y*(0.25+random.random()*0.5), self.size_x, self.size_y, self.bullets, SohaibAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED)),
+            Player(self.size_x * (0.25 + random.random() * 0.5), self.size_y * (0.25 + random.random() * 0.5), self.size_x, self.size_y, self.bullets, JackAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED)),
+            Player(self.size_x*(0.25+random.random()*0.5), self.size_y*(0.25+random.random()*0.5), self.size_x, self.size_y, self.bullets, AkhiAI(self.size_x, self.size_y, Player.SIZE, Player.SPEED))
+        ]
         
         self.font = pygame.font.Font(None, 30)
         self.score = 0
         self.ticks_per_bullet = ticks_per_bullet
+        self.a_player_alive = True
 
     def tick(self):
-        self.player.tick(self.bullets)
+        for player in self.players:
+            player.tick(self.bullets)
         for bullet in self.bullets:
             bullet.tick()
 
@@ -26,25 +36,28 @@ class Game:
 
         self.bullets = [self.bullets[i] for i
                         in self.field.collidelistall(bullet_hitboxes)]
+        for player in self.players:
+            if (player.alive and
+                    player.hitbox().collidelist(bullet_hitboxes) != -1):
+                player.alive = False
+                self.bullets += Game.death_explosion(player.x, player.y)
+            if not player.alive:
+                self.a_player_alive = False
 
-        if (self.player.alive and
-                self.player.hitbox().collidelist(bullet_hitboxes) != -1):
-            self.player.alive = False
-            self.bullets += Game.death_explosion(self.player.x, self.player.y)
-
-        if self.player.alive:
+        if self.a_player_alive:
             self.score += 1
 
-        if self.player.alive and not random.randrange(self.ticks_per_bullet):
+        if self.a_player_alive and not random.randrange(self.ticks_per_bullet):
             self.bullets.append(self.random_bullet())
 
     def draw(self, surface):
-        self.player.draw(surface)
-        for bullet in self.bullets:
-            bullet.draw(surface)
-        self.draw_score(surface)
-        if not self.player.alive:
-            self.draw_newgame_message(surface)
+        for player in self.players:
+            player.draw(surface)
+            for bullet in self.bullets:
+                bullet.draw(surface)
+            self.draw_score(surface)
+            if not player.alive:
+                self.draw_newgame_message(surface)
 
     def random_bullet(self):
         max_speed = 3
